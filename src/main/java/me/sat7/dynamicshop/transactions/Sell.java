@@ -1,6 +1,7 @@
 package me.sat7.dynamicshop.transactions;
 
 import java.util.Map;
+import java.util.function.IntConsumer;
 
 import me.sat7.dynamicshop.constants.Constants;
 import me.sat7.dynamicshop.economyhook.PlayerpointHook;
@@ -36,21 +37,6 @@ public final class Sell
 
     public static double quickSellItem(Player player, ItemStack itemStack, String shopName, int tradeIdx, boolean isShiftClick, int slot, boolean playSound)
     {
-        CustomConfig data = ShopUtil.shopConfigFiles.get(shopName);
-        String currencyType = ShopUtil.GetCurrency(data);
-
-        // 명령어 상품은 매입하지 않음
-        if (CommandItemUtil.IsCommandItem(data.get(), String.valueOf(tradeIdx)))
-            return 0;
-
-        double priceSellOld = DynaShopAPI.getSellPrice(shopName, itemStack);
-        double priceBuyOld = Calc.getCurrentPrice(shopName, String.valueOf(tradeIdx), true);
-        int stockOld = data.get().getInt(tradeIdx + ".stock");
-        int maxStock = data.get().getInt(tradeIdx + ".maxStock", -1);
-
-        double deliveryCharge = ShopUtil.CalcShipping(shopName, player);
-        double priceSum = -deliveryCharge;
-
         // 실제 판매 가능량 확인
         int tradeAmount;
         if (player != null)
@@ -68,6 +54,31 @@ public final class Sell
         {
             tradeAmount = itemStack.getAmount();
         }
+
+        return quickSellAmount(player, itemStack, shopName, tradeIdx, tradeAmount,
+                amount -> RemoveQuickSellItems(player, itemStack, amount, isShiftClick, slot), playSound);
+    }
+
+    // Quick sell core: sells up to tradeAmount of itemStack to the given shop item. removeItems takes the final
+    // amount (after the max stock and per-player limits) out of wherever the items are, e.g. the player's
+    // inventory or a shulker box. Returns the payout, 0 when nothing was sold.
+    static double quickSellAmount(Player player, ItemStack itemStack, String shopName, int tradeIdx, int tradeAmount,
+                                  IntConsumer removeItems, boolean playSound)
+    {
+        CustomConfig data = ShopUtil.shopConfigFiles.get(shopName);
+        String currencyType = ShopUtil.GetCurrency(data);
+
+        // 명령어 상품은 매입하지 않음
+        if (CommandItemUtil.IsCommandItem(data.get(), String.valueOf(tradeIdx)))
+            return 0;
+
+        double priceSellOld = DynaShopAPI.getSellPrice(shopName, itemStack);
+        double priceBuyOld = Calc.getCurrentPrice(shopName, String.valueOf(tradeIdx), true);
+        int stockOld = data.get().getInt(tradeIdx + ".stock");
+        int maxStock = data.get().getInt(tradeIdx + ".maxStock", -1);
+
+        double deliveryCharge = ShopUtil.CalcShipping(shopName, player);
+        double priceSum = -deliveryCharge;
 
         if (maxStock != -1 && stockOld + tradeAmount > maxStock)
         {
@@ -110,7 +121,7 @@ public final class Sell
             final int amount = tradeAmount;
             return MultiCurrencyTrade.SubmitSell(player, currencyType, shopName, tradeIdx, itemStack, amount, priceSum, calcResult[1],
                     stockOld > 0, sellLimit != Integer.MIN_VALUE, false, playSound ? "orb" : null,
-                    () -> RemoveQuickSellItems(player, itemStack, amount, isShiftClick, slot), priceBuyOld, priceSellOld, stockOld);
+                    () -> removeItems.accept(amount), priceBuyOld, priceSellOld, stockOld);
         }
 
         // 지급액이 0 으로 떨어지면 아이템만 사라지므로 매입 거절
@@ -134,7 +145,7 @@ public final class Sell
         // 플레이어 인벤토리에서 아이템 제거
         if (player != null)
         {
-            RemoveQuickSellItems(player, itemStack, tradeAmount, isShiftClick, slot);
+            removeItems.accept(tradeAmount);
             player.updateInventory();
         }
 
@@ -401,7 +412,7 @@ public final class Sell
         }
     }
 
-    private static void SendSellMessage(String currency, Economy econ, Player player, int actualAmount, double priceSum, ItemStack itemStack)
+    static void SendSellMessage(String currency, Economy econ, Player player, int actualAmount, double priceSum, ItemStack itemStack)
     {
         boolean itemHasCustomName = itemStack.getItemMeta() != null && itemStack.getItemMeta().hasDisplayName();
         boolean useLocalizedName = !itemHasCustomName && ConfigUtil.GetLocalizedItemName();

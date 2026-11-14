@@ -321,7 +321,7 @@ public final class LangUtil
 
             ccLang.get().addDefault("QUICK_SELL_TITLE", "§3빠른 판매");
             ccLang.get().addDefault("QUICK_SELL.GUIDE_TITLE", "§3§l빠른 판매 도움말");
-            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§a좌클릭으로 인벤토리에 있는 같은 유형의 아이템을 모두 팝니다.\n§a씨프트 좌클릭으로 클릭한 묶음만 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.");
+            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§a좌클릭으로 인벤토리에 있는 같은 유형의 아이템을 모두 팝니다.\n§a씨프트 좌클릭으로 클릭한 묶음만 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.\n§a셜커 상자를 좌클릭하면 안의 아이템과 상자를 함께 팝니다.");
 
             ccLang.get().addDefault("ARROW.UP", "§a⬆");
             ccLang.get().addDefault("ARROW.DOWN", "§c⬇");
@@ -418,6 +418,8 @@ public final class LangUtil
             ccLang.get().addDefault("MESSAGE.BUY_SUCCESS_PP", "§f{item} {amount}개를 {price}포인트에 구매함. 남은포인트: {bal}");
             ccLang.get().addDefault("MESSAGE.SELL_SUCCESS_PP", "§f{item} {amount}개를 {price}포인트에 판매함. 남은포인트: {bal}");
             ccLang.get().addDefault("MESSAGE.QSELL_NA", "§f해당 아이템을 취급하는 상점이 없습니다.");
+            ccLang.get().addDefault("MESSAGE.SHULKER_LEFTOVER", "§f셜커 상자 안에 판매할 수 없는 아이템이 남아 있어 상자는 판매하지 않았습니다.");
+            ccLang.get().addDefault("MESSAGE.SHULKER_HAS_UNSELLABLE", "§f셜커 상자 안에 매입하지 않는 아이템이 있어 상자를 판매할 수 없습니다.");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE", "§f배달비: {fee}");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE_NA", "§f다른 월드로 배달할 수 없습니다.");
             ccLang.get().addDefault("MESSAGE.NOT_ENOUGH_MONEY", "§f돈이 부족합니다. 잔액: {bal}");
@@ -867,7 +869,7 @@ public final class LangUtil
 
             ccLang.get().addDefault("QUICK_SELL_TITLE", "§3Quick Sell");
             ccLang.get().addDefault("QUICK_SELL.GUIDE_TITLE", "§3§lQuick Sell Guide");
-            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§aLeft-click to sell ALL items of this type in your inventory.\n§aShift left click to sell ONLY the stack you clicked.\n§aRight-click to go to the item shop.");
+            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§aLeft-click to sell ALL items of this type in your inventory.\n§aShift left click to sell ONLY the stack you clicked.\n§aRight-click to go to the item shop.\n§aLeft-click a shulker box to sell its contents and the box.");
 
             ccLang.get().addDefault("ARROW.UP", "§a⬆");
             ccLang.get().addDefault("ARROW.DOWN", "§c⬇");
@@ -964,6 +966,8 @@ public final class LangUtil
             ccLang.get().addDefault("MESSAGE.BUY_SUCCESS_PP", "§fBought {item} x{amount} for {price}points. Remaining points: {bal}");
             ccLang.get().addDefault("MESSAGE.SELL_SUCCESS_PP", "§fSold {item} x{amount} for {price}points. Remaining points: {bal}");
             ccLang.get().addDefault("MESSAGE.QSELL_NA", "§fThere is no shop that handles this item.");
+            ccLang.get().addDefault("MESSAGE.SHULKER_LEFTOVER", "§fSome items in the shulker box could not be sold, so the box was kept.");
+            ccLang.get().addDefault("MESSAGE.SHULKER_HAS_UNSELLABLE", "§fThis shulker box cannot be sold: it contains items that no shop buys.");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE", "§fDelivery fee: {fee}");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE_NA", "§fIt cannot be delivered to another world.");
             ccLang.get().addDefault("MESSAGE.NOT_ENOUGH_MONEY", "§fNot enough money. balance: {bal}");

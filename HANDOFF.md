@@ -2,6 +2,30 @@
 
 Living session-continuity notes. Read `CLAUDE.md` first for the durable architecture reference — this file is the "what's actually going on right now" doc. Update it whenever you leave work mid-flight; trim it once things fully land and are verified (don't let it grow forever as a changelog — that's what git history / README are for).
 
+## Session 2026-11-14: quick sell for shulker boxes (3.124.0, bot-tested on Purpur 26.3, released)
+
+- `/ds qsell`: left or shift-left click on a shulker box (any colour) sells the contents (one sale per item type,
+  best shop each, through the normal quick-sell core) and then the box. The box goes to the best shop for that box
+  colour, else `QuickSell.ShulkerBox.FallbackPrice` (default 1.0, Vault). All or nothing (maintainer's call):
+  if any item inside has no shop that buys it, nothing is sold (`MESSAGE.SHULKER_HAS_UNSELLABLE`). Items left after
+  a partial sale (max stock / per-player limit) keep the box (`MESSAGE.SHULKER_LEFTOVER`).
+- After `/code-review medium`: the box is checked before anything sells (shop, or fallback only when no shop lists that
+  box colour at all, so buy-only / max-stock shops cannot be bypassed for the base price). A box a shop lists exactly
+  (kit box with NBT) keeps the old quick sell. Contents paid through MultiCurrency keep the emptied box for a second
+  click, so an async refund never arrives after the box was sold. Known limits, not fixed: one delivery charge per
+  item type (each type is its own sale), fallback sales have no shop log / `ShopBuySellEvent`, fallback is Vault only.
+  Only the clicked box is sold, never every box in the inventory. Right click is unchanged.
+- Code: `transactions/ShulkerQuickSell`; `Sell.quickSellAmount` is the extracted quick-sell core (takes an
+  `IntConsumer` that removes the final amount, used by the inventory and shulker paths). New config keys
+  `QuickSell.ShulkerBox.Enable` / `.FallbackPrice` (added via jar defaults), lang `MESSAGE.SHULKER_LEFTOVER`,
+  one more line in `QUICK_SELL.GUIDE_LORE` (DefaultsSync updates it).
+- Checks: `mvn clean verify` green, `mvn -Pcompat-26 compile` green. Mineflayer bot on the local Purpur 26.3 test server
+  (through a temporary Velocity proxy, ItemsAdder jar moved out during the test because its beta build expired and
+  shuts the server down; the jar was later deleted at the maintainer's request): box with stone+diamond+bedrock sold nothing;
+  box no shop buys sold contents + box for 1.00; box a shop buys sold for the shop price.
+- `tools/api-kind-check.py` (1.21, 1.21.4, 26.2): 368 references, 0 problems. Not run: the full compat matrix (only `Tag.SHULKER_BOXES`, `BlockStateMeta`, `ShulkerBox`
+  added; all exist in 1.21).
+
 ## Session 2026-09-19: random price per shop (3.123.0, tested in-game, released)
 
 - Feature: a shop can apply a random percent on top of its prices, rerolled on a wall-clock (machine time) schedule.

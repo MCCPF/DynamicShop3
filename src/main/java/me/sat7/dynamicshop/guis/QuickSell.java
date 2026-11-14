@@ -4,6 +4,8 @@ import me.sat7.dynamicshop.DynaShopAPI;
 import me.sat7.dynamicshop.DynamicShop;
 import me.sat7.dynamicshop.files.CustomConfig;
 import me.sat7.dynamicshop.transactions.Sell;
+import me.sat7.dynamicshop.transactions.ShulkerQuickSell;
+import me.sat7.dynamicshop.utilities.ConfigUtil;
 import me.sat7.dynamicshop.utilities.ShopUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -67,6 +69,16 @@ public final class QuickSell extends InGameUI
 
         if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR)
         {
+            return;
+        }
+
+        // Shulker box (any colour): left or shift-left click sells its contents and the box. Only the clicked box,
+        // never every box in the inventory. A box some shop lists exactly as it is (e.g. a kit box) keeps the normal
+        // quick sell below, as before this feature.
+        if (e.isLeftClick() && ConfigUtil.GetShulkerBoxQuickSell() && ShulkerQuickSell.IsShulkerBox(e.getCurrentItem())
+                && !ShulkerQuickSell.AnyShopListsItem(e.getCurrentItem()))
+        {
+            ShulkerQuickSell.SellBox(player, e.getSlot());
             return;
         }
 

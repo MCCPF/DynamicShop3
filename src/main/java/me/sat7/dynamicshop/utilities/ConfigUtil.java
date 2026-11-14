@@ -281,6 +281,18 @@ public final class ConfigUtil
         return config.getBoolean("UI.EnableInventoryClickSearch.Shop");
     }
 
+    // [ QuickSell ] ==========
+
+    public static boolean GetShulkerBoxQuickSell()
+    {
+        return config.getBoolean("QuickSell.ShulkerBox.Enable", true);
+    }
+
+    public static double GetShulkerBoxFallbackPrice()
+    {
+        return config.getDouble("QuickSell.ShulkerBox.FallbackPrice", 1.0);
+    }
+
     // [ Log ] ==========
 
     public static boolean GetSaveLogs()
