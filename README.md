@@ -25,6 +25,7 @@
 - 🎨 **Modern text formatting** — Legacy colors, hex colors, gradients, and supported MiniMessage visual tags
 - 🔄 **Shop rotations** — Configurable stock and rotating shops
 - 📦 **Item metadata support** — Decorative items can optionally keep their names, lore, and tooltip information
+- 📦 **Sell whole shulker boxes** — In quick sell, one click sells everything inside a shulker box of any colour, plus the box itself. If one item inside cannot be sold, nothing is sold
 - ⌨️ **Command items** — A shop item can run console commands when bought instead of giving the shown item, with its own coloured name and lore
 - 🛡️ **Safe transactions** — Protection against incomplete and duplicate payments
 - 💾 **Persistent data** — Unfinished MultiCurrency orders survive restarts and can be recovered safely
@@ -152,6 +153,43 @@ Normal buy: 50
 - **The range holds even with whole-number prices.** With the integer-only option on, rounding alone could push a cheap item past the range you set — a 1-coin item rolled at -50% would round down to nothing. The rounded price is kept inside the range instead, so the worst case is no change rather than a free item.
 - **A random roll can never make selling more profitable than buying.** While the feature is on, a sell price is capped at the buy price, so nobody can farm money by buying and selling the same item. Items that cannot be bought from the shop (`SellOnly`) are exempt, because that loop is impossible for them — they keep their own sell value and stay inside the min/max range you set. When the cap does apply, the item's lore says so, instead of leaving players to wonder why the percent looks out of range.
 
+## 📦 Quick Sell & Shulker Boxes
+
+`/ds qsell` opens the quick sell menu. Click items in your own inventory to sell them to whichever shop pays the most:
+
+- **Left-click** sells every item of that type in your inventory.
+- **Shift + left-click** sells only the stack you clicked.
+- **Right-click** opens the shop that buys that item.
+
+### Selling a shulker box
+
+Left-click (or Shift + left-click) a shulker box of any colour:
+
+1. Each kind of item inside sells to the shop that pays the most for it.
+2. Then the box itself sells:
+   - to the shop that pays the most for that box colour, or
+   - for a **base price of 1.00** (paid through Vault) when no shop lists that box colour at all.
+
+Only the box you click is sold, never every box in your inventory.
+
+**All or nothing.** If even one item inside cannot be sold to any shop, nothing is sold — not the contents, not the box — and the player sees:
+
+```
+This shulker box cannot be sold: it contains items that no shop buys.
+```
+
+The same applies to the box: if a shop lists that box colour but refuses it right now (buy only, max stock, no money, no permission, closed), nothing is sold. The base price cannot be used to get around a shop's rules.
+
+- A box a shop lists exactly as it is (for example a pre-filled kit box) still sells through the normal quick sell, at that shop's price.
+- If a sale stops partway (max stock or a per-player limit is reached), the unsold items stay in the box and the box is kept.
+- For MultiCurrency shops the emptied box is kept after the contents sell; click it again to sell the box.
+- Each kind of item is a separate sale, so a shop with a delivery charge charges it once per kind.
+
+| `config.yml` key | Default | Meaning |
+|---|---|---|
+| `QuickSell.ShulkerBox.Enable` | `true` | Turn shulker selling in quick sell on or off |
+| `QuickSell.ShulkerBox.FallbackPrice` | `1.0` | Base price for a box no shop lists. `0` means such boxes are not sold |
+
 ## 🎨 Modern Text & Colors
 
 Shop titles, the start page, buttons, names, and lore support modern formatting, including:
@@ -187,7 +225,7 @@ Main command `/dynamicshop`, alias `/ds`. Every `/ds shop <shop> …` command al
 | `/ds` | Open the start page (or the default shop) |
 | `/ds shop [<shop>]` | Open a shop |
 | `/shop [<shop>]` | Same as `/ds shop` (if `Command.UseShopCommand` is on) |
-| `/ds qsell` | Quick sell menu |
+| `/ds qsell` | Quick sell menu (also sells whole shulker boxes) |
 | `/sell hand` | Sell the stack in your hand |
 | `/sell handall` | Sell every item like the one in your hand |
 | `/sell all` | Sell everything a shop buys. Other items stay, and nothing is ever sold for 0 |
@@ -269,7 +307,7 @@ Updating is always **replace the jar and restart**. You never need to delete `co
 Things that behave differently from the original:
 
 - **Quick sell:** left-click sells **all** items of that type, Shift + left-click sells only the clicked stack. The guide text in the menu is updated automatically.
-- **Quick sell for shulker boxes (any colour):** clicking a shulker box in `/ds qsell` sells everything inside it, each item to its best shop, then the box itself. The box sells to the best shop that buys that box colour, or for a base price of 1.00 through Vault when no shop lists that box at all (a shop that lists it but refuses it right now, e.g. buy only or max stock, blocks the sale instead) (`QuickSell.ShulkerBox.FallbackPrice` in `config.yml`, `0` turns it off; `QuickSell.ShulkerBox.Enable: false` turns the feature off). If any item inside is not bought by any shop, nothing is sold (not the contents, not the box) and the player is told why. A box a shop lists exactly as it is (for example a pre-filled kit box) still sells through the normal quick sell.
+- **Quick sell sells whole shulker boxes** (new, on by default). See [Quick Sell & Shulker Boxes](#-quick-sell--shulker-boxes). Turn it off with `QuickSell.ShulkerBox.Enable: false`.
 - **`showValueChange` now reports the real sell change.** The original computed the arrow and percent on the sell line from the *buy* price, so a shop with a separate sell value or a sales tax showed a number that did not belong to that line. The sell line is now compared against its own base price, and the sales tax taken off is shown next to it, e.g. `§7(-tax 25%)`. Prices themselves are unchanged.
 - **`/sell all`, `/sell hand` and quick sell never take items for nothing.** The original removed items whose sell payout rounded to 0 (for example a sell price set to 0, or a delivery charge larger than the price) and paid 0. These items are now refused and stay in the inventory.
 - Everything in the ✨ Features list above applies to your existing shops right away.
