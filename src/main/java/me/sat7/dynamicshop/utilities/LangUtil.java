@@ -321,7 +321,10 @@ public final class LangUtil
 
             ccLang.get().addDefault("QUICK_SELL_TITLE", "§3빠른 판매");
             ccLang.get().addDefault("QUICK_SELL.GUIDE_TITLE", "§3§l빠른 판매 도움말");
-            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§a좌클릭으로 인벤토리에 있는 같은 유형의 아이템을 모두 팝니다.\n§a씨프트 좌클릭으로 클릭한 묶음만 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.\n§a셜커 상자를 좌클릭하면 안의 아이템과 상자를 함께 팝니다.");
+            ccLang.get().addDefault("QUICK_SELL.SELL_ALL_LORE", "§e이 버튼을 두 번 클릭하면 인벤토리의 모든 아이템을 팝니다.");
+            ccLang.get().addDefault("QUICK_SELL.SELL_ALL_CONFIRM_TITLE", "§c§l한 번 더 클릭하면 모두 판매합니다");
+            ccLang.get().addDefault("QUICK_SELL.SELL_ALL_CONFIRM_LORE", "§7인벤토리에서 상점이 매입하는 모든 아이템과 셜커 상자를 팝니다.\n§7매입하지 않는 아이템은 남습니다.\n§75초 뒤에 취소됩니다.");
+            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§a좌클릭으로 인벤토리에 있는 같은 유형의 아이템을 모두 팝니다.\n§a씨프트 좌클릭으로 클릭한 묶음만 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.\n§a셜커 상자를 좌클릭하면 모든 셜커 상자를 안의 아이템과 함께 팝니다.\n§a셜커 상자를 씨프트 좌클릭하면 클릭한 상자만 팝니다.");
 
             ccLang.get().addDefault("ARROW.UP", "§a⬆");
             ccLang.get().addDefault("ARROW.DOWN", "§c⬇");
@@ -420,6 +423,7 @@ public final class LangUtil
             ccLang.get().addDefault("MESSAGE.QSELL_NA", "§f해당 아이템을 취급하는 상점이 없습니다.");
             ccLang.get().addDefault("MESSAGE.SHULKER_LEFTOVER", "§f셜커 상자 안에 판매할 수 없는 아이템이 남아 있어 상자는 판매하지 않았습니다.");
             ccLang.get().addDefault("MESSAGE.SHULKER_HAS_UNSELLABLE", "§f셜커 상자 안에 매입하지 않는 아이템이 있어 상자를 판매할 수 없습니다.");
+            ccLang.get().addDefault("MESSAGE.SHULKER_SELL_ALL_KEPT", "§f셜커 상자 {num}개는 판매하지 않았습니다. 매입하지 않는 아이템이 있거나 안의 아이템을 모두 팔 수 없었습니다.");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE", "§f배달비: {fee}");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE_NA", "§f다른 월드로 배달할 수 없습니다.");
             ccLang.get().addDefault("MESSAGE.NOT_ENOUGH_MONEY", "§f돈이 부족합니다. 잔액: {bal}");
@@ -574,7 +578,8 @@ public final class LangUtil
 
             DefaultsSync.Apply(ccLang, "Lang_V3_ko-KR", Map.of("QUICK_SELL.GUIDE_LORE", List.of(
                     "§a판매할 아이탬을 좌클릭 하세요.\n§a씨프트 좌클릭으로 같은 유형의 아이탬을 모두 팝니다.\n§a우클릭으로 해당 아이탬 상점으로 이동합니다.",
-                    "§a판매할 아이템을 좌클릭 하세요.\n§a씨프트 좌클릭으로 같은 유형의 아이템을 모두 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.")));
+                    "§a판매할 아이템을 좌클릭 하세요.\n§a씨프트 좌클릭으로 같은 유형의 아이템을 모두 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.",
+                    "§a좌클릭으로 인벤토리에 있는 같은 유형의 아이템을 모두 팝니다.\n§a씨프트 좌클릭으로 클릭한 묶음만 팝니다.\n§a우클릭으로 해당 아이템 상점으로 이동합니다.\n§a셜커 상자를 좌클릭하면 안의 아이템과 상자를 함께 팝니다.")));
             ccLang.get().options().copyDefaults(true);
             ccLang.save();
         }
@@ -869,7 +874,10 @@ public final class LangUtil
 
             ccLang.get().addDefault("QUICK_SELL_TITLE", "§3Quick Sell");
             ccLang.get().addDefault("QUICK_SELL.GUIDE_TITLE", "§3§lQuick Sell Guide");
-            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§aLeft-click to sell ALL items of this type in your inventory.\n§aShift left click to sell ONLY the stack you clicked.\n§aRight-click to go to the item shop.\n§aLeft-click a shulker box to sell its contents and the box.");
+            ccLang.get().addDefault("QUICK_SELL.SELL_ALL_LORE", "§eClick this pane twice to sell everything in your inventory.");
+            ccLang.get().addDefault("QUICK_SELL.SELL_ALL_CONFIRM_TITLE", "§c§lClick again to sell everything");
+            ccLang.get().addDefault("QUICK_SELL.SELL_ALL_CONFIRM_LORE", "§7Sells every item and shulker box in your inventory that a shop buys.\n§7Items no shop buys stay.\n§7Cancels after 5 seconds.");
+            ccLang.get().addDefault("QUICK_SELL.GUIDE_LORE", "§aLeft-click to sell ALL items of this type in your inventory.\n§aShift left click to sell ONLY the stack you clicked.\n§aRight-click to go to the item shop.\n§aLeft-click a shulker box to sell ALL your shulker boxes with their contents.\n§aShift left click a shulker box to sell only that box.");
 
             ccLang.get().addDefault("ARROW.UP", "§a⬆");
             ccLang.get().addDefault("ARROW.DOWN", "§c⬇");
@@ -968,6 +976,7 @@ public final class LangUtil
             ccLang.get().addDefault("MESSAGE.QSELL_NA", "§fThere is no shop that handles this item.");
             ccLang.get().addDefault("MESSAGE.SHULKER_LEFTOVER", "§fSome items in the shulker box could not be sold, so the box was kept.");
             ccLang.get().addDefault("MESSAGE.SHULKER_HAS_UNSELLABLE", "§fThis shulker box cannot be sold: it contains items that no shop buys.");
+            ccLang.get().addDefault("MESSAGE.SHULKER_SELL_ALL_KEPT", "§f{num} shulker box(es) were kept: they hold items no shop buys, or not everything inside could be sold.");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE", "§fDelivery fee: {fee}");
             ccLang.get().addDefault("MESSAGE.DELIVERY_CHARGE_NA", "§fIt cannot be delivered to another world.");
             ccLang.get().addDefault("MESSAGE.NOT_ENOUGH_MONEY", "§fNot enough money. balance: {bal}");
@@ -1121,7 +1130,8 @@ public final class LangUtil
             ccLang.get().addDefault("PLAYER_POINTS", "Player Points");
 
             DefaultsSync.Apply(ccLang, "Lang_V3_en-US", Map.of("QUICK_SELL.GUIDE_LORE", List.of(
-                    "§aLeft-click the item you want to sell.\n§aShift left click to sell all items of the same type.\n§aRight-click to go to the item shop.")));
+                    "§aLeft-click the item you want to sell.\n§aShift left click to sell all items of the same type.\n§aRight-click to go to the item shop.",
+                    "§aLeft-click to sell ALL items of this type in your inventory.\n§aShift left click to sell ONLY the stack you clicked.\n§aRight-click to go to the item shop.\n§aLeft-click a shulker box to sell its contents and the box.")));
             ccLang.get().options().copyDefaults(true);
             ccLang.save();
         }

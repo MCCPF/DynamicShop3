@@ -34,4 +34,5 @@ ShopYmlBackup.Enable: true
 ShopYmlBackup.IntervalMinutes: 60
 ShopYmlBackup.CullAgeMinutes: 300
 QuickSell.ShulkerBox.Enable: true
-QuickSell.ShulkerBox.FallbackPrice: 1.0
+QuickSell.ShulkerBox.FallbackPrice: 2.5
+QuickSell.SellAllButton.Enable: true

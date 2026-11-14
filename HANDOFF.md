@@ -2,11 +2,42 @@
 
 Living session-continuity notes. Read `CLAUDE.md` first for the durable architecture reference — this file is the "what's actually going on right now" doc. Update it whenever you leave work mid-flight; trim it once things fully land and are verified (don't let it grow forever as a changelog — that's what git history / README are for).
 
+## Session 2026-11-14 (2): sell every shulker box at once (3.125.0, bot-tested, not committed)
+
+- Maintainer's call: in `/ds qsell`, **left click** on a shulker box now sells **every** shulker box in the inventory
+  (storage slots 0-35), **shift + left click** sells only the clicked box. Same pattern as normal items (left = all of
+  that type, shift = that stack). Kit boxes (listed exactly by a shop) are skipped and keep the normal quick sell.
+- Each box is still all or nothing on its own (`ShulkerQuickSell.SellAllBoxes` calls `SellBox(player, slot, quiet)`
+  per box, which returns a `Result`). With 2+ boxes the per-box "kept" messages are suppressed and one summary is sent:
+  new lang key `MESSAGE.SHULKER_SELL_ALL_KEPT` (`{num}`). With only one box it behaves exactly like before.
+- `QUICK_SELL.GUIDE_LORE` changed in both languages; the 3.124.0 texts were added to the `DefaultsSync` known old defaults.
+- Checks: `mvn clean verify` green, `mvn -Pcompat-26 compile` green. Mineflayer bot on a throwaway Paper 1.21.11
+  (VaultUnlocked + DSTestEco): left click sold 2 sellable boxes, kept the bedrock box, loose stone untouched, one
+  summary message; shift click sold only the clicked box; a single unsellable box gives the old specific message.
+  No new Bukkit API used.
+- Also (maintainer's request): the guide panes at the top of `/ds qsell` sell the whole inventory, like `/sell all`
+  (storage slots incl. hotbar, not armour/off hand) plus every shulker box. Two clicks: the first turns the panes red
+  for 5 s (`QUICK_SELL.SELL_ALL_CONFIRM_TITLE` / `_LORE`), the second sells. A guide line `QUICK_SELL.SELL_ALL_LORE`
+  is appended to the pane lore. Config `QuickSell.SellAllButton.Enable` (default true, jar default). Code:
+  `QuickSell.OnClickUpperInventory` / `SellEverything`; `ShulkerQuickSell.SellAllBoxes` now returns the boxes sold.
+  Bot-tested on the same Paper 1.21.11 setup: first click sells nothing, panes red, back to green after 5 s, second
+  click sold stone/dirt/box and kept bedrock + sword, empty inventory gives `MESSAGE.NO_ITEM_TO_SELL_2`.
+- After `/code-review medium`: multi-box sells (left click on a box, sell-all pane) skip **empty** boxes except the
+  clicked one, so storage boxes are not sold for the base price. New `Result.PARTIAL` (some contents sold, box kept)
+  counts as sold and as kept. Pane needs `dshop.sell` and the `/sell` creative rule, accepts `DOUBLE_CLICK`, and its
+  confirm window is tick based (`SELL_ALL_CONFIRM_TICKS`), so the red panes and the window end together under lag.
+  Not fixed (minor): a currency-conflict (-2) message repeats per box; `SellEverything` duplicates the `/sell all`
+  loop; box target lookup is not cached per colour. Both bot tests rerun with an empty storage box: PASS.
+- Maintainer's request: `QuickSell.ShulkerBox.FallbackPrice` default 1.0 -> 2.5 (jar config.yml + getter fallback).
+  `PluginConfigVersion` 7 -> 8; `ConfigUtil.UpdateShulkerFallbackPrice` moves a config still on 1.0 (written by
+  3.124.0) to 2.5 once and logs it; any other value is kept. Tested: Version 7 + 1.0 became 2.5 / Version 8 and boxes
+  sold for 2.50; Version 7 + 3.0 stayed 3.0 with no log line.
+
 ## Session 2026-11-14: quick sell for shulker boxes (3.124.0, bot-tested on Purpur 26.3, released)
 
 - `/ds qsell`: left or shift-left click on a shulker box (any colour) sells the contents (one sale per item type,
   best shop each, through the normal quick-sell core) and then the box. The box goes to the best shop for that box
-  colour, else `QuickSell.ShulkerBox.FallbackPrice` (default 1.0, Vault). All or nothing (maintainer's call):
+  colour, else `QuickSell.ShulkerBox.FallbackPrice` (default 1.0, 2.5 from 3.125.0, Vault). All or nothing (maintainer's call):
   if any item inside has no shop that buys it, nothing is sold (`MESSAGE.SHULKER_HAS_UNSELLABLE`). Items left after
   a partial sale (max stock / per-player limit) keep the box (`MESSAGE.SHULKER_LEFTOVER`).
 - After `/code-review medium`: the box is checked before anything sells (shop, or fallback only when no shop lists that

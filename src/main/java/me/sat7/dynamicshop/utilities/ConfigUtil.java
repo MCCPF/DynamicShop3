@@ -15,7 +15,7 @@ import static me.sat7.dynamicshop.utilities.MathUtil.Clamp;
 
 public final class ConfigUtil
 {
-    public final static int PluginConfigVersion = 7;
+    public final static int PluginConfigVersion = 8;
 
     public static int GetConfigVersion()
     {
@@ -69,6 +69,7 @@ public final class ConfigUtil
 
         ConvertV2toV3();
         ShopYMLUpdate();
+        UpdateShulkerFallbackPrice();
         ValidateAndApply();
         SetConfigVersion(ConfigUtil.PluginConfigVersion);
         Save();
@@ -290,7 +291,27 @@ public final class ConfigUtil
 
     public static double GetShulkerBoxFallbackPrice()
     {
-        return config.getDouble("QuickSell.ShulkerBox.FallbackPrice", 1.0);
+        return config.getDouble("QuickSell.ShulkerBox.FallbackPrice", 2.5);
+    }
+
+    // 3.125.0: the default base price for a shulker box no shop lists went from 1.0 to 2.5. A config still on the
+    // old default (written by 3.124.0) moves to the new one; any other value is the admin's choice and is kept.
+    private static void UpdateShulkerFallbackPrice()
+    {
+        if (GetConfigVersion() >= 8)
+            return;
+
+        String key = "QuickSell.ShulkerBox.FallbackPrice";
+        if (config.isSet(key) && config.getDouble(key) == 1.0)
+        {
+            config.set(key, 2.5);
+            DynamicShop.plugin.getLogger().info(key + ": 1.0 -> 2.5 (new default)");
+        }
+    }
+
+    public static boolean GetQuickSellSellAllButton()
+    {
+        return config.getBoolean("QuickSell.SellAllButton.Enable", true);
     }
 
     // [ Log ] ==========

@@ -25,7 +25,7 @@
 - 🎨 **Modern text formatting** — Legacy colors, hex colors, gradients, and supported MiniMessage visual tags
 - 🔄 **Shop rotations** — Configurable stock and rotating shops
 - 📦 **Item metadata support** — Decorative items can optionally keep their names, lore, and tooltip information
-- 📦 **Sell whole shulker boxes** — In quick sell, one click sells everything inside a shulker box of any colour, plus the box itself. If one item inside cannot be sold, nothing is sold
+- 📦 **Sell whole shulker boxes** — In quick sell, one click sells every shulker box in your inventory (any colour) with everything inside; Shift + click sells just one box. If one item inside a box cannot be sold, that box is kept and nothing in it is sold
 - ⌨️ **Command items** — A shop item can run console commands when bought instead of giving the shown item, with its own coloured name and lore
 - 🛡️ **Safe transactions** — Protection against incomplete and duplicate payments
 - 💾 **Persistent data** — Unfinished MultiCurrency orders survive restarts and can be recovered safely
@@ -160,17 +160,23 @@ Normal buy: 50
 - **Left-click** sells every item of that type in your inventory.
 - **Shift + left-click** sells only the stack you clicked.
 - **Right-click** opens the shop that buys that item.
+- **Click a green pane at the top twice** to sell everything in your inventory at once: every item a shop buys and every shulker box with its contents. The first click turns the panes red ("Click again to sell everything"); the second click within 5 seconds sells. Items no shop buys and empty shulker boxes stay. Armour and the off hand are not touched. A fast double-click works too. Needs the same permission as `/sell all` (`dshop.sell`) and, like `/sell`, is blocked in creative mode without `dshop.admin.creative`.
 
 ### Selling a shulker box
 
-Left-click (or Shift + left-click) a shulker box of any colour:
+Click a shulker box of any colour, the same way as other items:
+
+- **Left-click** sells **every** shulker box in your inventory that holds items, with everything inside. No need to click box by box. Other empty boxes (storage boxes you keep) are not sold; the clicked box is.
+- **Shift + left-click** sells only the box you clicked.
+
+For each box:
 
 1. Each kind of item inside sells to the shop that pays the most for it.
 2. Then the box itself sells:
    - to the shop that pays the most for that box colour, or
-   - for a **base price of 1.00** (paid through Vault) when no shop lists that box colour at all.
+   - for a **base price of 2.50** (paid through Vault) when no shop lists that box colour at all.
 
-Only the box you click is sold, never every box in your inventory.
+When you sell all boxes, each box is checked on its own: boxes that can be sold are sold, the others are kept, and one message says how many were kept.
 
 **All or nothing.** If even one item inside cannot be sold to any shop, nothing is sold — not the contents, not the box — and the player sees:
 
@@ -188,7 +194,8 @@ The same applies to the box: if a shop lists that box colour but refuses it righ
 | `config.yml` key | Default | Meaning |
 |---|---|---|
 | `QuickSell.ShulkerBox.Enable` | `true` | Turn shulker selling in quick sell on or off |
-| `QuickSell.ShulkerBox.FallbackPrice` | `1.0` | Base price for a box no shop lists. `0` means such boxes are not sold |
+| `QuickSell.ShulkerBox.FallbackPrice` | `2.5` | Base price for a box no shop lists. `0` means such boxes are not sold |
+| `QuickSell.SellAllButton.Enable` | `true` | The green panes sell the whole inventory (two clicks). `false` keeps them as guide only |
 
 ## 🎨 Modern Text & Colors
 
